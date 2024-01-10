@@ -1,10 +1,14 @@
 import json
-path_file=["/home/sea/Desktop/Fariza/Angle_RNA/ENV_angle_RNA/m2_geniomhe_rna_project/data/SPOT-RNA-1D/test.json",
-"/home/sea/Desktop/Fariza/Angle_RNA/ENV_angle_RNA/Test_DSSR_theta.json",
-"/home/sea/Desktop/Fariza/Angle_RNA/ENV_angle_RNA/m2_geniomhe_rna_project/data/SPOT-RNA-1D/training.json",
-"/home/sea/Desktop/Fariza/Angle_RNA/ENV_angle_RNA/Train_DSSR_theta.json"]
-nom=["SPOT","SPOT","OUR_MODEL","OUR_MODEL"]
-nomT=["Test","Train","Test","Train"]
+path_files=[sys.argv[1],    
+sys.argv[2],                
+
+sys.argv[3],   
+sys.argv[4]]
+
+DSSR_path=[sys.argv[9],sys.argv[10]]
+
+nom=[sys.argv[5],sys.argv[6]]
+nomT=[sys.argv[7],sys.argv[8]]
 count=0
 def write_res(MAE,cle) : 
     global count
@@ -20,15 +24,24 @@ def calcul_MAE (value1,value2) :
             angle_true+=1
     MAE=abs(angle_pred-angle_true)
     return(MAE)
-        
-for path in range(0,len(path_file)-1,2) : 
-    with open(path_file[path],"r") as file_1 :
-        with open(path_file[path+1],"r") as file_2 : 
-            data_json_1= json.load(file_1)
-            data_json_2=json.load(file_2)
-            for cle1, valeur1 in data_json_1.items():
-                for cle2,valeur2 in data_json_2.items():
-                    if (cle1==cle2) : 
-                            MAE=calcul_MAE(valeur1['angles']['theta'],valeur2['angles']['theta']) 
-                            write_res(MAE,cle1)
+def prep_val(file1,file2) : 
+    for cle1, valeur1 in file1.items():
+        for cle2,valeur2 in file2.items():
+            if (cle1==cle2) : 
+                MAE=calcul_MAE(valeur1['angles']['theta'],valeur2['angles']['theta']) 
+                write_res(MAE,cle1)
+                
+for name in nom : 
+    for end in nomT  :
+        outfile.append(name+"_"+end+".txt")
+
+for file in range(len(path_files)):
+    if file < len(path_files) / 2:
+        file1 = pd.read_json(path_files[file])
+        file2 = pd.read_json(DSSR_path[0])
+        prep_val(file1, file2)
+    else:
+        file1 = pd.read_json(path_files[file])
+        file2 = pd.read_json(DSSR_path[1])
+        prep_val(file1, file2)
     count+=1
