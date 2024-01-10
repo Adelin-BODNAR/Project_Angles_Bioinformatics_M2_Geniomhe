@@ -3,7 +3,7 @@ import os
 import pandas as pd
 
 diff_file=["Test","Train"]
-fichiers_source = os.listdir("data/output)
+fichiers_source = os.listdir("data/output")
 
 def complete_file(all_file, fichiers, outfile):
     file1 = pd.read_csv(all_file[0], sep=":", header=None)
@@ -26,13 +26,13 @@ def complete_file(all_file, fichiers, outfile):
             output_add.write("Le meilleur modèle est le modèle " + fichiers[1])
 
 for deb in diff_file:
-    outfile = "/home/sea/Desktop/Fariza/Angle_RNA/ENV_angle_RNA/Comparaison_" + deb + ".txt"
+    outfile = "data/output/Comparaison_" + deb + ".txt"
     print(deb)
     all_file = []
     fichiers = []
     for fichier in fichiers_source:
-        if fichier.startswith("MAE_DSSR_" + deb) and os.path.join("/home/sea/Desktop/Fariza/Angle_RNA/ENV_angle_RNA/", fichier) not in all_file:
-            all_file.append(os.path.join("/home/sea/Desktop/Fariza/Angle_RNA/ENV_angle_RNA/", fichier))
+        if fichier.startswith("MAE_DSSR_" + deb) and os.path.join("data/output", fichier) not in all_file:
+            all_file.append(os.path.join("data/output", fichier))
             fichiers.append(str(fichier))
 
     with open(outfile, "w") as output:
