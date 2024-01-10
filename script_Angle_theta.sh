@@ -8,10 +8,28 @@ pip install -r requirements.txt
 
 mkdir data/output
 
-#Cree les fichiers json pour DSSR
-python -m src.dssr_wrapper --input_path=data/TestSet --output_path=data/output/Test_DSSR.json
+mkdir data/TestSet_A
+mkdir data/TrainingSet_A
+dossier_entree="data/TestSet"
+dossier_sortie="data/TestSet_A"
+for fichier in "$dossier_entree"/*.pdb
+do
+  nom_fichier=$(basename "$fichier")
+  cat <(head -n 3 "$fichier") <(awk '$5 == "A" {print}' "$fichier") > "$dossier_sortie/${nom_fichier%.pdb}_filtre.pdb"
+done
 
-python -m src.dssr_wrapper --input_path=/data/TrainingSet --output_path=data/output/Train_DSSR.json
+dossier_entree="data/TrainingSet"
+dossier_sortie="data/Training_A"
+for fichier in "$dossier_entree"/*.pdb
+do
+  nom_fichier=$(basename "$fichier")
+  cat <(head -n 3 "$fichier") <(awk '$5 == "A" {print}' "$fichier") > "$dossier_sortie/${nom_fichier%.pdb}_filtre.pdb"
+done
+
+#Cree les fichiers json pour DSSR
+python -m src.dssr_wrapper --input_path=data/TestSet_A --output_path=data/output/Test_DSSR.json
+
+python -m src.dssr_wrapper --input_path=/data/TrainingSet_A --output_path=data/output/Train_DSSR.json
 
 
 #Extrait uniquement les angles theta des fichiers precedent
