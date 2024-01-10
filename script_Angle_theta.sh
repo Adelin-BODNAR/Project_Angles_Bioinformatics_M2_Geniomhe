@@ -3,34 +3,36 @@
 #sudo apt install python3
 pip install json
 
-make -C dssr/src
-pip install -r requirements.txt
-
-mkdir data/output
-
 mkdir data/TestSet_A
 mkdir data/TrainingSet_A
+
 #Cree un fichier avec uniquement les chaines A
 dossier_entree="data/TestSet"
 dossier_sortie="data/TestSet_A"
 for fichier in "$dossier_entree"/*.pdb
 do
   nom_fichier=$(basename "$fichier")
-  cat <(head -n 3 "$fichier") <(awk '$5 == "A" {print}' "$fichier") > "$dossier_sortie/${nom_fichier%.pdb}_filtre.pdb"
+  cat <(head -n 3 "$fichier") <(awk '{if ($5 == "A" || $5 == "") print}' "$fichier") > "$dossier_sortie/${nom_fichier%.pdb}.pdb"
 done
 
 dossier_entree="data/TrainingSet"
-dossier_sortie="data/Training_A"
+dossier_sortie="data/TrainingSet_A"
 for fichier in "$dossier_entree"/*.pdb
 do
   nom_fichier=$(basename "$fichier")
-  cat <(head -n 3 "$fichier") <(awk '$5 == "A" {print}' "$fichier") > "$dossier_sortie/${nom_fichier%.pdb}_filtre.pdb"
+  cat <(head -n 3 "$fichier") <(awk '{if ($5 == "A" || $5 == "") print}' "$fichier") > "$dossier_sortie/${nom_fichier%.pdb}.pdb"
 done
 
-#Cree les fichiers json pour DSSR
-python -m src.dssr_wrapper --input_path=data/TestSet_A --output_path=data/output/Test_DSSR.json
 
-python -m src.dssr_wrapper --input_path=/data/TrainingSet_A --output_path=data/output/Train_DSSR.json
+#Cree les fichiers json pour DSSR
+make -C dssr/src
+pip install -r requirements.txt
+
+mkdir data/output
+
+python3 -m src.dssr_wrapper --input_path=data/TestSet_A --output_path=data/output/Test_DSSR.json
+
+python3 -m src.dssr_wrapper --input_path=data/TrainingSet --output_path=data/output/Train_DSSR.json
 
 
 #Extrait uniquement les angles theta des fichiers precedent
@@ -44,7 +46,7 @@ Rscript src/distrib_theta.R data/output/Train_DSSR_theta.json Distribution_train
 
 Rscript src/distrib_theta.R data/output/Test_DSSR_theta.json Distribution_test_theta_DSSR.pdf test_set
 
-sudo apt-get install pdftk   
+#sudo apt-get install pdftk   
 
 pdftk data/output/Distribution_test_theta_DSSR.pdf data/output/Distribution_train_theta_DSSR.pdf cat output data/output/Distribution_test_train_theta_DSSR.pdf
 
