@@ -13,7 +13,7 @@ count=0
 def write_res(MAE,cle) : 
     global count
     with open ("/home/sea/Desktop/Fariza/Angle_RNA/ENV_angle_RNA/MAE_DSSR_"+nom[count]+"_"+nomT[count]+".txt",'a' ) as res_file :
-        res_file.write(str(cle)+" : \nMAE : "+str(MAE)+"\n")
+        res_file.write(str(cle)+" : \tMAE : "+str(MAE)+"\n")
 
 def calcul_MAE (value1,value2) : 
     angle_pred=0
@@ -33,7 +33,7 @@ def prep_val(file1,file2) :
                 
 for name in nom : 
     for end in nomT  :
-        outfile.append(name+"_"+end+".txt")
+        outfile.append(end+"_"+name+".txt")
 
 for file in range(len(path_files)):
     if file < len(path_files) / 2:
