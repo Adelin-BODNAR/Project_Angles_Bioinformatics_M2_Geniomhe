@@ -30,7 +30,7 @@ def get_train_and_test_data():
     train_x and test_x : One hot encoded sequences padded to have a height equal to SEQ_LENGTH
     train_y and test_y : Labels made of lists of classes padded to have a length equal to SEQ_LENGTH
     """
-
+    #I used these files because I didn't figure out how to get the datas from the pdb files -Adelin
     with open("data/SPOT-RNA-1D/training.json") as training_file :
         training_file_data = json.load(training_file)
 
@@ -123,6 +123,9 @@ def get_train_and_test_data():
     
     #print(test_y_array)
     #print([len(l) for l in test_y_array])
+
+    #To check visualy if there is missing data in the arrays
+    #print(True in np.isnan(train_x_padded_array), True in np.isnan(train_y_array), True in np.isnan(test_x_padded_array), True in np.isnan(test_y_array))
     
     return train_x_padded_array, train_y_array, test_x_padded_array, test_y_array
 
@@ -163,20 +166,20 @@ def create_model(nb_canals = 32, filter_height = 3, filter_width = 4, pooling_he
     model.add(Dense(nb_after_flatten, activation='relu', kernel_initializer=kernel_init_opt, kernel_regularizer=regularizers.l1(lambda_l1)))
 
     # Add output layer for multi-class predictions
-    model.add(Dense(SEQ_LENGTH, activation='softmax'))
+    model.add(Dense(SEQ_LENGTH, activation='sigmoid'))
 
 	# compile model
     opt = SGD(learning_rate= learning_rate_opt, momentum=0.9)
-    model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer=opt, loss='binary_crossentropy', metrics=['accuracy'])
     model.summary()
 
     return model
 
-#TODO
-def fit_model(train_x, train_y, test_x, test_y): #, dict_params_model
+
+def fit_model(train_x, train_y, test_x, test_y, dict_params_model = dict()): 
         
 	# define model
-    model = create_model() #**dict_params_model
+    model = create_model(**dict_params_model)
 
 	# fit model
     history = model.fit(train_x, train_y, epochs=500, batch_size=32, validation_data=(test_x, test_y), verbose=1)
@@ -190,19 +193,20 @@ def fit_model(train_x, train_y, test_x, test_y): #, dict_params_model
     return model
 
 
-#Function performing a randomized search to tune the hyperparameters
-def RandomizedSearch(verbose = 0):
 
-	#Split the data into train and test sets (this one doesn't use the one hot encoded format)
-	train_x, train_y, test_x, test_y = get_train_and_test_data() #TODO : Import train and test data
-	print(train_y.shape)
-	print(train_x.shape)
+def RandomizedSearch(train_x, train_y, test_x, test_y, verbose = 0):
+    """Function performing a randomized search to tune the hyperparameters
 
-	print(train_y)
-	print(train_x)
+    """
+
+    print(train_y.shape)
+    print(train_x.shape)
+
+    print(train_y)
+    print(train_x)
 
 	#Dictionnary containing the hyperparameters needing to be tuned
-	param_search = {
+    param_search = {
     "nb_canals" : [32, 64, 128],
     "filter_height" : [2,3,4],
     "filter_width" : [2,3,4],
@@ -216,21 +220,21 @@ def RandomizedSearch(verbose = 0):
 	}
 
 
-	model_search = KerasClassifier(build_fn=create_model, verbose=1,nb_canals = 32, filter_height = 3, filter_width = 4, pooling_height = 1, pooling_width = 4, nb_after_flatten = 100, padding_opt = "same", kernel_init_opt = "he_uniform", learning_rate_opt = 0.01, lambda_l1 = 0.01)
+    model_search = KerasClassifier(build_fn=create_model, verbose=1,nb_canals = 32, filter_height = 3, filter_width = 4, pooling_height = 1, pooling_width = 4, nb_after_flatten = 100, padding_opt = "same", kernel_init_opt = "he_uniform", learning_rate_opt = 0.01, lambda_l1 = 0.01)
 
-	kfold = StratifiedKFold(n_splits=5, shuffle=True)
+    kfold = StratifiedKFold(n_splits=5, shuffle=True)
 
-	random_search = RandomizedSearchCV(model_search, param_search, cv=kfold, n_iter=100, random_state = 42)
+    random_search = RandomizedSearchCV(model_search, param_search, cv=kfold, n_iter=100, random_state = 42)
 
 	# Fit the randomized search to the data
-	random_result = random_search.fit(train_x, train_y)
+    random_result = random_search.fit(train_x, train_y, epochs=100, batch_size=32, validation_data=(test_x, test_y), verbose=1)
 
 	# Print the best parameters and the corresponding accuracy
-	if verbose == 1 :
-		print("Best Parameters:", random_result.best_params_)
-		print("Best Accuracy:", random_result.best_score_)
+    if verbose == 1 :
+        print("Best Parameters:", random_result.best_params_)
+        print("Best Accuracy:", random_result.best_score_)
 
-	return random_result.best_params_
+    return random_result.best_params_
 
 #def predict_angles(inputs):
 #    outputs
@@ -238,4 +242,9 @@ def RandomizedSearch(verbose = 0):
 
 if __name__ == "__main__" :
     train_x, train_y, test_x, test_y = get_train_and_test_data()
-    model = fit_model(train_x, train_y, test_x, test_y)
+    #RandomizedSearchCV doesn't work with multioutput classifiers.
+    #Error : Supported target types are: ('binary', 'multiclass'). Got 'multiclass-multioutput' instead.
+    #dict_params_random = RandomizedSearch(train_x, train_y, test_x, test_y, verbose = 1)
+    model = fit_model(train_x, train_y, test_x, test_y) #, dict_params_random
+
+    print(model.predict(test_x[:1]))
