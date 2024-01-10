@@ -24,6 +24,16 @@ def complete_file(all_file, fichiers, outfile):
             output_add.write("Le meilleur modèle est le modèle " + fichiers[0])
         else:
             output_add.write("Le meilleur modèle est le modèle " + fichiers[1])
+        models = [fichiers[0], fichiers[1]]
+        counts = [res_1, res_2]
+
+        plt.bar(models, counts)
+        plt.xlabel('Modèle')
+        plt.ylabel('Nombre de meilleur prediction')
+        plt.title('Nombre de fois où chaque modèle était le meilleur')
+        image=plt.savefig("/home/sea/Desktop/Fariza/Angle_RNA/ENV_angle_RNA/Histogramme_" + deb + ".png")
+        plt.close()  
+
 
 for deb in diff_file:
     outfile = "data/output/Comparaison_" + deb + ".txt"
