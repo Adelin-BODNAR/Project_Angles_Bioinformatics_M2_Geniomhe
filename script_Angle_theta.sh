@@ -31,7 +31,7 @@ pdftk data/output/Distribution_test_theta_DSSR.pdf data/output/Distribution_trai
 
 rm -f data/output/Distribution_test_theta_DSSR.pdf
 rm -f data/output/Distribution_train_theta_DSSR.pdf
-
-#python3 src/MAE_calc.py
+#Calcule le MAE pour le model SPOT et notre model 
+python3 src/MAE_calc.py data/SPOT-RNA-1D/test.json data/output/test_our_model.json data/SPOT-RNA-1D/training.json data/output/train_our_model.json SPOT OUR_MODEL Test Train data/output/Test_DSSR_theta.json data/output/Train_DSSR_theta.json
 
 
