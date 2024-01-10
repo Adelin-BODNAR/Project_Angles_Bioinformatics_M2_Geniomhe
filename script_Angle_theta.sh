@@ -10,6 +10,7 @@ mkdir data/output
 
 mkdir data/TestSet_A
 mkdir data/TrainingSet_A
+#Cree un fichier avec uniquement les chaines A
 dossier_entree="data/TestSet"
 dossier_sortie="data/TestSet_A"
 for fichier in "$dossier_entree"/*.pdb
