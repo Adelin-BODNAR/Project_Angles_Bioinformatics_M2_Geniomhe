@@ -117,9 +117,14 @@ done < data/output/test_classes.txt
 python3 src/label_matrix.py data/output/AllTest_Matrices.csv data/output/Test_uniq_classe.txt data/output/AllTest_Matrices_with_labels.csv Labels_all_matrices_test.csv
 python3 src/label_matrix.py d/data/output/Training_matrices/ data/output/Train_uniq_classe.txt data/output/AllTraining_Matrices_with_labels.csv Labels_all_matrices_train.csv
 
+#MLP
+python3 src/model_mlp.py data/output/ALLTraining_Matrices.csv data/output/Labels_all_matrices_train.csv data/output/AllTraining_Matrices.csv data/output/Labels_all_matrices_test.csv
 
 #Calcule le MAE pour le model SPOT
-python3 src/MAE_calc.py data/SPOT-RNA-1D/Test_SPOT_theta.txt data/output/Test_SPOT_theta.txt
-data/SPOT-RNA-1D/training.json
-#Compare les MAE
-python3 src/Compare_MAE.py
+python3 src/MAE_calc.py data/output/Train_SPOT_theta.txt data/output/Train_DSSR_theta.txt data/output/MAE_DSSR_Train__SPOT.txt
+python3 src/MAE_calc.py data/output/Test_SPOT_theta.txt data/output/Test_DSSR_theta.txt data/output/data/output/MAE_DSSR_Test__SPOT.txt
+
+
+awk 'BEGIN { sum=0; count=0; } { sum+=$5; count++; lines[count]=$0; } END { if(count>0) { lines[1]="Moyenne : " sum/count; for(i=1;i<=count;i++) print lines[i]; } }' data/output/MAE_DSSR_Train__SPOT.txt > temp && mv temp data/output/MAE_DSSR_Train__SPOT.txt
+awk 'BEGIN { sum=0; count=0; } { sum+=$5; count++; lines[count]=$0; } END { if(count>0) { lines[1]="Moyenne : " sum/count; for(i=1;i<=count;i++) print lines[i]; } }' data/output/MAE_DSSR_Test__SPOT.txt > temp && mv temp data/output/MAE_DSSR_Train__SPOT.txt
+
