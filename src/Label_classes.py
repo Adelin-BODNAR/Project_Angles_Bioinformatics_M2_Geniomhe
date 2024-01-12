@@ -1,5 +1,8 @@
 import csv
 import pandas as pd
+import sys
+import os
+
 csv_file_path = sys.agrv[1]
 txt_file_path =sys.agrv[2]
 output_csv_path = sys.agrv[3]
