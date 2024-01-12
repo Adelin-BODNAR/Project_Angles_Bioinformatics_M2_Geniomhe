@@ -1,47 +1,36 @@
 import json
-path_files=[sys.argv[1],    
-sys.argv[2],                
+fichier1=sys.argv[1] 
+fichier2=sys.argv[2]             
+def extraire_classes(data):
+    with open(data, "r") as file_1:
+        classes = {}
+        for lines in file_1:
+            elements = lines.split()
+            if len(elements) >= 9:
+                sequence = elements[0]
+                classe = int(elements[8])
+                if sequence not in classes:
+                    classes[sequence] = []
+                classes[sequence].append(classe)
+        return classes
 
-sys.argv[3],   
-sys.argv[4]]
 
-DSSR_path=[sys.argv[9],sys.argv[10]]
+classes_fichier1 = extraire_classes(fichier1)
+classes_fichier2 = extraire_classes(fichier2)
 
-nom=[sys.argv[5],sys.argv[6]]
-nomT=[sys.argv[7],sys.argv[8]]
-count=0
-def write_res(MAE,cle) : 
-    global count
-    with open ("/home/sea/Desktop/Fariza/Angle_RNA/ENV_angle_RNA/MAE_DSSR_"+nom[count]+"_"+nomT[count]+".txt",'a' ) as res_file :
-        res_file.write(str(cle)+" : \tMAE : "+str(MAE)+"\n")
 
-def calcul_MAE (value1,value2) : 
-    angle_pred=0
-    angle_true=0
-    for i in range(min(len(value1)-1,len(value2)-1)) : 
-        angle_pred+=1
-        if value1[i]==value2[i] : 
-            angle_true+=1
-    MAE=abs(angle_pred-angle_true)
-    return(MAE)
-def prep_val(file1,file2) : 
-    for cle1, valeur1 in file1.items():
-        for cle2,valeur2 in file2.items():
-            if (cle1==cle2) : 
-                MAE=calcul_MAE(valeur1['angles']['theta'],valeur2['angles']['theta']) 
-                write_res(MAE,cle1)
-                
-for name in nom : 
-    for end in nomT  :
-        outfile.append(end+"_"+name+".txt")
+for sequence in set(classes_fichier1.keys()) & set(classes_fichier2.keys()):
+    classes_sequence_fichier1 = classes_fichier1[sequence]
+    classes_sequence_fichier2 = classes_fichier2[sequence]
+    
+    total_MAE = 0  
+    
+    for class_fichier1, class_fichier2 in zip(classes_sequence_fichier1, classes_sequence_fichier2):
+        Di = abs(class_fichier1 - class_fichier2)
+        MAE = min(Di, 15 - Di)
+        total_MAE += MAE  
 
-for file in range(len(path_files)):
-    if file < len(path_files) / 2:
-        file1 = pd.read_json(path_files[file])
-        file2 = pd.read_json(DSSR_path[0])
-        prep_val(file1, file2)
-    else:
-        file1 = pd.read_json(path_files[file])
-        file2 = pd.read_json(DSSR_path[1])
-        prep_val(file1, file2)
-    count+=1
+    average_MAE = total_MAE / len(classes_sequence_fichier1)  
+
+    with open("data/output/MAE_DSSR_Test__SPOT.txt", 'a') as res_file:
+        res_file.write(f"{sequence} :\tMAE : {average_MAE}\n")
