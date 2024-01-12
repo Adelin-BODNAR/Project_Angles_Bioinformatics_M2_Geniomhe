@@ -50,9 +50,9 @@ def create_fasta_files(input_folder, output_folder, error_folder):
 if __name__ == "__main__":
     import pathlib
 
-    input_folder_path = 'TestSet_A'
-    output_folder_path = 'TestSet_seq_Fasta'
-    error_folder_path = 'PDB_Files_error'
+    input_folder_path = 'data/TestSet_A'
+    output_folder_path = 'data/TestSet_seq_Fasta'
+    error_folder_path = 'data/PDB_Files_error'
 
     input_folder = pathlib.Path(input_folder_path)
     output_folder = pathlib.Path(output_folder_path)
