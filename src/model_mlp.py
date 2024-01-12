@@ -8,7 +8,8 @@ from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.utils import to_categorical
 from sklearn.metrics import mean_absolute_error
 import json
-
+import os 
+import sys
 
 def load_data(csv_file):
     """
@@ -44,11 +45,11 @@ def build_model(input_shape, output_dim):
 
 def main():
     # fichier CSV contenant les matrices one-hot encodées pour l'entraînement
-    train_csv_file = 'ALLTraining_Matrices.csv'
+    train_csv_file = sys.argv[1]
     # Charger les matrices one-hot encodées pour l'entraînement
     train_data_matrix = load_data(train_csv_file)
     # Charger les labels pour l'entraînement
-    train_labels_file = 'Labels_all_Train_matrices.csv'
+    train_labels_file = sys.argv[2]
     train_labels = load_labels(train_labels_file)
 
     # Séparer les caractéristiques (matrices one-hot encoded) pour l'entraînement
@@ -73,11 +74,11 @@ def main():
 
    
     # fichier content les matrices one-hot encodées pour le test
-    test_csv_file = 'ALLTest_Matrices.csv'
+    test_csv_file = sys.argv[3]
     # Charger les matrices one-hot encodées pour le test
     test_data_matrix = load_data(test_csv_file)
     # Charger les étiquettes (classes) pour le test
-    test_labels_file = 'Labels_all_matrices_test.csv'
+    test_labels_file = sys.argv[4]
     test_labels = load_labels(test_labels_file)
 
     # Séparer les caractéristiques (matrices one-hot encoded) pour le test
