@@ -63,9 +63,15 @@ pdftk data/output/Distribution_test_theta_DSSR.pdf data/output/Distribution_trai
 rm -f data/output/Distribution_test_theta_DSSR.pdf
 rm -f data/output/Distribution_train_theta_DSSR.pdf
 #Creation des fasta _file
-python3 FastaSeq_to_matrix data/TestSet_A data/TestSet_seq_Fasta
+python3 src/Extract_seq_pdb_fasta.py data/TestSet_A data/TestSet_seq_Fasta TestSet_seq_Fasta
+python3 src/Extract_seq_pdb_fasta.py data/TrainingSet_A data/TestSet_seq_Fasta TrainingSet_seq_Fasta
+
 # Sequence in Fasta file Transformation into a matrix
-python3 multifasta_matrix.py
+python3 src/FastaSeq_to_matrix.py data/TrainingSet_seq_Fasta_
+python3 src/FastaSeq_to_matrix.py data/TrainingSet_seq_Fasta_
+
+python3 src/multifasta_matrix.py data/output/TestSet_seq_Fasta
+python3 src/multifasta_matrix.py data/output/TestSet_seq_Fasta
 
 #Calcule le MAE pour le model SPOT
 python3 src/MAE_calc.py data/SPOT-RNA-1D/Test_SPOT_theta.txt data/output/Test_SPOT_theta.txt
