@@ -67,11 +67,11 @@ python3 src/Extract_seq_pdb_fasta.py data/TestSet_A data/TestSet_seq_Fasta TestS
 python3 src/Extract_seq_pdb_fasta.py data/TrainingSet_A data/TestSet_seq_Fasta TrainingSet_seq_Fasta
 
 # Sequence in Fasta file Transformation into a matrix
-python3 src/FastaSeq_to_matrix.py data/TrainingSet_seq_Fasta_
-python3 src/FastaSeq_to_matrix.py data/TrainingSet_seq_Fasta_
+python3 src/FastaSeq_to_matrix.py data/TrainingSet_seq_Fasta
+python3 src/FastaSeq_to_matrix.py data/TestSet_seq_Fasta
 
-python3 src/multifasta_matrix.py data/output/TestSet_seq_Fasta
-python3 src/multifasta_matrix.py data/output/TestSet_seq_Fasta
+python3 src/multifasta_matrix.py data/output/TrainingSet_seq_Fasta data/output/Training_matrices
+python3 src/multifasta_matrix.py data/output/TestSet_seq_Fasta data/output/Test_matrices
 
 #Calcule le MAE pour le model SPOT
 python3 src/MAE_calc.py data/SPOT-RNA-1D/Test_SPOT_theta.txt data/output/Test_SPOT_theta.txt
