@@ -9,12 +9,12 @@ def read_fasta(file_path):
     with open(file_path, 'r') as file:
         lines = file.readlines()
 
-    # Vérifier si la séquence est déjà au bon format (contient '>')
+
     if lines[0].startswith('>'):
         # Concaténer toutes les lignes après la première ligne qui contient le nom de la séquence
         sequence = ''.join(line.strip() for line in lines[1:])
     else:
-        # La séquence n'est pas au format FASTA, utiliser la ligne telle quelle
+        
         sequence = lines[0].strip()
 
     return sequence
@@ -42,13 +42,11 @@ def one_hot_encoding(sequence):
 def process_fasta_files(fasta_files):
     sequences = []
 
-    # Lire les séquences à partir des fichiers FASTA et les normaliser
     for fasta_file in fasta_files:
         sequence = read_fasta(fasta_file)
         normalized_sequence = normalize_fasta_sequence(sequence)
         sequences.append(normalized_sequence)
 
-    # Trouver la longueur maximale parmi toutes les séquences
     max_sequence_length = max(len(sequence) for sequence in sequences)
 
     # Initialiser la liste des matrices one-hot
