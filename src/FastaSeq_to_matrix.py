@@ -64,7 +64,7 @@ def process_fasta_files(fasta_files):
 
 
 def main():
-    fasta_folder_path = 'data/TrainingSet_seq_Fasta'
+    fasta_folder_path = sys.argv[1]
     output_folder = 'data/output'
 
     fasta_files = [os.path.join(fasta_folder_path, file) for file in os.listdir(fasta_folder_path) if file.endswith('.fasta')]
