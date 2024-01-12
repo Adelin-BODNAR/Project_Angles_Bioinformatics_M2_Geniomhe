@@ -70,8 +70,53 @@ python3 src/Extract_seq_pdb_fasta.py data/TrainingSet_A data/TestSet_seq_Fasta T
 python3 src/FastaSeq_to_matrix.py data/TrainingSet_seq_Fasta
 python3 src/FastaSeq_to_matrix.py data/TestSet_seq_Fasta
 
-python3 src/multifasta_matrix.py data/output/TrainingSet_seq_Fasta data/output/Training_matrices
-python3 src/multifasta_matrix.py data/output/TestSet_seq_Fasta data/output/Test_matrices
+python3 src/multifasta_matrix.py data/output/TrainingSet_seq_Fasta data/Training_matrices
+python3 src/multifasta_matrix.py data/output/TestSet_seq_Fasta data/Test_matrices
+
+#Concatenation matrices 
+python3 src/Concatenation_Matrices.py data/Test_matrices data/output/AllTest_Matrices.csv
+python3 src/Concatenation_Matrices.py data/Training_matrices data/output/AllTraining_Matrices.csv
+#Extrait les labels
+output_file_classes="data/output/Train_uniq_classe.txt"
+output_file_ids="data/output/Train_ordered_ids.txt"
+
+# Ajout de l'entête "label" dans le fichier de sortie des classes
+echo "label" > "$output_file_classes"
+
+while IFS=, read -r full_id classe rest; do
+    id=$(echo "$full_id" | awk '{print $1}')
+    classe=$(echo "$rest" | awk '{print $NF}')  # Récupère le dernier champ de la ligne
+
+    csv_file="/data/output/Training_matrices/>${id}_Matrix.csv"
+
+    if [ -f "$csv_file" ]; then
+        echo "$classe" >> "$output_file_classes"
+        echo "$id" >> "$output_file_ids"
+    fi
+done < data/output/train_classes.txt
+
+
+output_file_classes="data/output/Test_uniq_classe.txt"
+output_file_ids="data/output/Test_ordered_ids.txt"
+
+# Ajout de l'entête "label" dans le fichier de sortie des classes
+echo "label" > "$output_file_classes"
+
+while IFS=, read -r full_id classe rest; do
+    id=$(echo "$full_id" | awk '{print $1}')
+    classe=$(echo "$rest" | awk '{print $NF}')  # Récupère le dernier champ de la ligne
+
+    csv_file="/data/output/Test_matrices/>${id}_Matrix.csv"
+
+    if [ -f "$csv_file" ]; then
+        echo "$classe" >> "$output_file_classes"
+        echo "$id" >> "$output_file_ids"
+    fi
+done < data/output/test_classes.txt
+#associe les labels aux matrices
+python3 src/label_matrix.py data/output/AllTest_Matrices.csv data/output/Test_uniq_classe.txt data/output/AllTest_Matrices_with_labels.csv Labels_all_matrices_test.csv
+python3 src/label_matrix.py d/data/output/Training_matrices/ data/output/Train_uniq_classe.txt data/output/AllTraining_Matrices_with_labels.csv Labels_all_matrices_train.csv
+
 
 #Calcule le MAE pour le model SPOT
 python3 src/MAE_calc.py data/SPOT-RNA-1D/Test_SPOT_theta.txt data/output/Test_SPOT_theta.txt
