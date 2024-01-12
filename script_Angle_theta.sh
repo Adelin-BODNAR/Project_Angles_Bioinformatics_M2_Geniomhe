@@ -63,7 +63,7 @@ pdftk data/output/Distribution_test_theta_DSSR.pdf data/output/Distribution_trai
 rm -f data/output/Distribution_test_theta_DSSR.pdf
 rm -f data/output/Distribution_train_theta_DSSR.pdf
 #Creation des fasta _file
-python3 FastaSeq_to_matrix
+python3 FastaSeq_to_matrix data/TestSet_A data/TestSet_seq_Fasta
 # Sequence in Fasta file Transformation into a matrix
 python3 multifasta_matrix.py
 
