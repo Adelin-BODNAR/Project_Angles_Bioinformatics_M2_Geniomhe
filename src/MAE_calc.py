@@ -1,4 +1,7 @@
 import json
+import sys
+import os
+
 fichier1=sys.argv[1] 
 fichier2=sys.argv[2]             
 def extraire_classes(data):
