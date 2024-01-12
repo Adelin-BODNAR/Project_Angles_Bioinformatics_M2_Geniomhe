@@ -3,7 +3,7 @@ from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
 from Bio.SeqIO import write
 import os 
-
+import sys
 def extract_rna_sequence(pdb_file):
     parser = PDB.PDBParser(QUIET=True)
     structure = parser.get_structure('structure', pdb_file)
