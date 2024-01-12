@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 # Set the path to the folder containing the CSV files
-folder_path = 'Test_matrices'
+folder_path = 'data/Test_matrices'
 
 # Initialize an empty DataFrame to store the concatenated matrices
 concatenated_df = pd.DataFrame()
