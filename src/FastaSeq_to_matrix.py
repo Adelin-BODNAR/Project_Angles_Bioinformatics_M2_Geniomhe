@@ -1,5 +1,6 @@
 import numpy as np
-import os
+import os 
+import sys
 import pandas as pd
 
 def read_fasta(file_path):
